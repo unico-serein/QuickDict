@@ -1,5 +1,7 @@
 # QuickDict - MDX/MDD 词典查询工具
 
+[English](README.en.md) | 简体中文
+
 一个基于 Electron 的词典查询工具，支持 MDX/MDD 格式的词典文件。
 
 ## 功能特性
@@ -53,14 +55,17 @@ const CSS_FILE = path.join(DICTIONARY_PATH, 'oalecd9.css');
 ## 项目结构
 
 ```
-ezdict2/
+quickdict/
 ├── src/
 │   ├── main.js           # 主进程代码
 │   ├── mdict-parser.js   # MDX/MDD 解析器
 │   ├── index.html        # 配置界面
+│   ├── settings.html     # 设置界面
 │   └── lookup.html       # 查询结果界面
 ├── package.json
-└── README.md
+├── README.md             # 中文文档
+├── README.en.md          # 英文文档
+└── .gitignore
 ```
 
 ## 注意事项
