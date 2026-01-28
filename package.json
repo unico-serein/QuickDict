@@ -1,0 +1,59 @@
+{
+  "name": "quickdict",
+  "version": "1.0.0",
+  "description": "MDX/MDD dictionary lookup tool with popup window",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder --win",
+    "build:portable": "electron-builder --win portable",
+    "build:dir": "electron-builder --dir"
+  },
+  "build": {
+    "appId": "com.quickdict.app",
+    "productName": "QuickDict",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "keywords": [
+    "dictionary",
+    "mdx",
+    "electron"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^26.4.0"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0",
+    "js-mdict": "^6.0.8",
+    "system-font-families": "^0.6.0"
+  }
+}
