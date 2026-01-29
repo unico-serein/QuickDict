@@ -1,0 +1,54 @@
+[package]
+name = "rdict"
+version = "1.0.0"
+description = "MDX/MDD dictionary lookup tool built with Tauri"
+authors = ["RDict Team"]
+license = "MIT"
+repository = ""
+edition = "2021"
+rust-version = "1.75"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# Tauri core
+tauri = { version = "2", features = [] }
+tauri-plugin-shell = "2"
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-dialog = "2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.35", features = ["full"] }
+
+# Configuration
+dirs = "5.0"
+
+# MDX/MDD parsing
+byteorder = "1.5"
+flate2 = "1.0"
+lru = "0.12"
+regex = "1.10"
+
+# HTTP client for online dictionary
+reqwest = { version = "0.12", features = ["json"] }
+
+# HTML processing
+html-escape = "0.2"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Time
+chrono = "0.4"
+urlencoding = "2.1"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

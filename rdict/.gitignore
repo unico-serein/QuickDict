@@ -1,0 +1,14 @@
+.cargo/
+target/
+
+# Ignore IDE/editor specific files
+.vscode/
+.idea/
+*.swp
+
+# Ignore build artifacts
+*.o
+*.rlib
+*.dSYM/
+*.exe
+

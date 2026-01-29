@@ -1,0 +1,16 @@
+This is a placeholder for the Tauri icon.
+
+To generate proper icons for your Tauri app:
+
+1. Prepare a high-resolution PNG image (at least 512x512 pixels)
+2. Use the Tauri CLI to generate icons:
+   
+   cargo tauri icon /path/to/your/icon.png
+
+Or manually create these files:
+- icon.png (512x512)
+- icon.ico (Windows)
+- icon.icns (macOS)
+- 32x32.png
+- 128x128.png
+- 128x128@2x.png

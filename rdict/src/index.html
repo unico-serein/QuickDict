@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>RDict Configuration</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: #2a2a2a;
+      color: #e0e0e0;
+      padding: 24px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .subtitle {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .section {
+      background: #333;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #4fc3f7;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    select {
+      width: 100%;
+      padding: 8px 12px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 4px;
+      color: #e0e0e0;
+      font-size: 14px;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #4fc3f7;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary {
+      background: #4fc3f7;
+      color: #1a1a1a;
+    }
+
+    .btn-primary:hover {
+      background: #3ba8d4;
+    }
+
+    .btn-secondary {
+      background: #444;
+      color: #e0e0e0;
+    }
+
+    .btn-secondary:hover {
+      background: #555;
+    }
+
+    .status {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .status.success {
+      background: #2a4a3a;
+      color: #6c9;
+      display: block;
+    }
+
+    .status.error {
+      background: #4a2a2a;
+      color: #c99;
+      display: block;
+    }
+
+    .dict-info {
+      margin-top: 12px;
+      padding: 12px;
+      background: #2a2a2a;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    .dict-info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px solid #3a3a3a;
+    }
+
+    .dict-info-item:last-child {
+      border-bottom: none;
+    }
+
+    .dict-info-label {
+      color: #888;
+    }
+
+    .dict-info-value {
+      color: #6c9;
+    }
+
+    .hotkey-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hotkey-input input {
+      flex: 1;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #4fc3f7;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 RDict</h1>
+  <div class="subtitle">基于 Rust 的高性能词典查询工具</div>
+
+  <div class="section">
+    <div class="section-title">词典配置</div>
+    <div class="form-group">
+      <label>词典文件夹路径</label>
+      <input type="text" id="dictPath" placeholder="选择包含 MDX/MDD 文件的文件夹...">
+    </div>
+    <div class="button-group">
+      <button class="btn-primary" onclick="selectDictionary()">选择文件夹</button>
+      <button class="btn-secondary" onclick="loadDictionary()">加载词典</button>
+    </div>
+    <div id="dictInfo" class="dict-info" style="display: none;"></div>
+    <div id="dictStatus" class="status"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">快捷键设置</div>
+    <div class="form-group">
+      <label>全局快捷键</label>
+      <div class="hotkey-input">
+        <input type="text" id="hotkey" placeholder="例如: Alt+M">
+        <button class="btn-primary" onclick="setHotkey()">设置</button>
+      </div>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="clipboardMonitor">
+      <label for="clipboardMonitor" style="margin: 0;">启用剪贴板监听（复制英文单词自动查询）</label>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">关于</div>
+    <div style="font-size: 13px; color: #888; line-height: 1.6;">
+      <p>RDict v1.0.0 - Rust 实现版</p>
+      <p>基于 Tauri 框架构建，支持 MDX/MDD 格式词典</p>
+      <p style="margin-top: 8px;">
+        <span style="color: #4fc3f7;">使用提示:</span> 按下全局快捷键打开查询窗口，输入单词即可查询
+      </p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { invoke } from '@tauri-apps/api/core';
+    import { open } from '@tauri-apps/plugin-dialog';
+
+    // Load config on startup
+    async function loadConfig() {
+      try {
+        const config = await invoke('get_config');
+        document.getElementById('dictPath').value = config.dictionary_path || '';
+        document.getElementById('hotkey').value = config.hotkey || 'Alt+M';
+        document.getElementById('clipboardMonitor').checked = config.clipboard_monitor || false;
+        
+        if (config.mdx_file) {
+          showDictInfo(config);
+        }
+      } catch (error) {
+        console.error('Failed to load config:', error);
+      }
+    }
+
+    async function selectDictionary() {
+      try {
+        const selected = await open({
+          directory: true,
+          multiple: false,
+          title: '选择词典文件夹'
+        });
+        
+        if (selected) {
+          document.getElementById('dictPath').value = selected;
+        }
+      } catch (error) {
+        showStatus('dictStatus', '选择文件夹失败: ' + error, 'error');
+      }
+    }
+
+    async function loadDictionary() {
+      const path = document.getElementById('dictPath').value;
+      if (!path) {
+        showStatus('dictStatus', '请选择词典文件夹', 'error');
+        return;
+      }
+
+      try {
+        await invoke('set_dictionary_path', { path });
+        showStatus('dictStatus', '词典加载成功！', 'success');
+        
+        // Refresh config to show updated info
+        const config = await invoke('get_config');
+        showDictInfo(config);
+      } catch (error) {
+        showStatus('dictStatus', '词典加载失败: ' + error, 'error');
+      }
+    }
+
+    function showDictInfo(config) {
+      const infoDiv = document.getElementById('dictInfo');
+      const mdxFile = config.mdx_file ? config.mdx_file.split(/[\\/]/).pop() : '未找到';
+      const mddFile = config.mdd_file ? config.mdd_file.split(/[\\/]/).pop() : '未找到';
+      const cssFile = config.css_file ? config.css_file.split(/[\\/]/).pop() : '未找到';
+      
+      infoDiv.innerHTML = `
+        <div class="dict-info-item">
+          <span class="dict-info-label">MDX 文件:</span>
+          <span class="dict-info-value">${mdxFile}</span>
+        </div>
+        <div class="dict-info-item">
+          <span class="dict-info-label">MDD 文件:</span>
+          <span class="dict-info-value">${mddFile}</span>
+        </div>
+        <div class="dict-info-item">
+          <span class="dict-info-label">CSS 文件:</span>
+          <span class="dict-info-value">${cssFile}</span>
+        </div>
+      `;
+      infoDiv.style.display = 'block';
+    }
+
+    async function setHotkey() {
+      const hotkey = document.getElementById('hotkey').value;
+      if (!hotkey) {
+        alert('请输入快捷键');
+        return;
+      }
+
+      try {
+        const success = await invoke('set_hotkey', { hotkey });
+        if (success) {
+          alert('快捷键设置成功！');
+        } else {
+          alert('快捷键设置失败，请尝试其他组合');
+        }
+      } catch (error) {
+        alert('设置失败: ' + error);
+      }
+    }
+
+    document.getElementById('clipboardMonitor').addEventListener('change', async (e) => {
+      try {
+        await invoke('toggle_clipboard_monitor', { enabled: e.target.checked });
+      } catch (error) {
+        console.error('Failed to toggle clipboard monitor:', error);
+      }
+    });
+
+    function showStatus(elementId, message, type) {
+      const el = document.getElementById(elementId);
+      el.textContent = message;
+      el.className = 'status ' + type;
+      setTimeout(() => {
+        el.className = 'status';
+      }, 3000);
+    }
+
+    // Expose functions to window for onclick handlers
+    window.selectDictionary = selectDictionary;
+    window.loadDictionary = loadDictionary;
+    window.setHotkey = setHotkey;
+
+    // Load config on startup
+    loadConfig();
+  </script>
+</body>
+</html>
