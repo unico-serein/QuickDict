@@ -74,9 +74,10 @@ class MdictParser {
       let displayWord = word;
 
       // 处理 @@@LINK= 重定向
-      const linkMatch = definition.match(/@@@LINK=\s*(\S+)/i);
+      // 匹配到行尾或下一个标签，支持包含空格的目标词
+      const linkMatch = definition.match(/@@@LINK=\s*(.+?)(?:\s*<|$)/i);
       if (linkMatch) {
-        const targetWord = linkMatch[1];
+        const targetWord = linkMatch[1].trim();
         console.log(`Redirecting: ${word} -> ${targetWord}`);
 
         // 查找目标词
@@ -95,75 +96,90 @@ class MdictParser {
 
       const htmlContent = this.processDefinition(definition, word);
 
-      // 构建完整的HTML
+      // 构建内容片段（深色主题，不包含 html/body 标签）
       const fontFamily = this.displaySettings.fontFamily || 'Segoe UI';
       const fontSize = this.displaySettings.fontSize || '14';
       const lineHeight = this.displaySettings.lineHeight || '1.6';
 
       return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <style>
-            body {
-              font-family: '${fontFamily}', Tahoma, Geneva, Verdana, sans-serif;
-              padding: 10px;
-              margin: 0;
-              font-size: ${fontSize}px;
-              line-height: ${lineHeight};
-              color: #333;
-            }
+        <style>
+          .dict-content {
+            font-family: '${fontFamily}', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            font-size: ${fontSize}px;
+            line-height: ${lineHeight};
+            color: #e0e0e0;
+          }
 
-            h2 {
-              color: #2196F3;
-              border-bottom: 2px solid #2196F3;
-              padding-bottom: 5px;
-            }
+          .dict-content h2 {
+            color: #4fc3f7;
+            border-bottom: 2px solid #4fc3f7;
+            padding-bottom: 5px;
+          }
 
-            .word-title {
-              font-size: ${parseInt(fontSize) + 4}px;
-              font-weight: bold;
-              color: #1976D2;
-              margin-bottom: 10px;
-            }
+          .dict-content .word-title {
+            font-size: ${parseInt(fontSize) + 6}px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+          }
 
-            .redirect-info {
-              font-size: ${parseInt(fontSize) - 2}px;
-              color: #999;
-              margin-bottom: 10px;
-              font-style: italic;
-            }
+          .dict-content .redirect-info {
+            font-size: ${parseInt(fontSize) - 2}px;
+            color: #888;
+            margin-bottom: 10px;
+            font-style: italic;
+          }
 
-            ${this.cssContent}
+          ${this.cssContent}
 
-            img {
-              max-width: 100%;
-              height: auto;
-            }
+          /* 深色主题覆盖样式 */
+          .dict-content, .dict-content div, .dict-content span, .dict-content p, .dict-content td, .dict-content th {
+            color: #e0e0e0 !important;
+          }
 
-            table {
+          .dict-content img {
+            max-width: 100%;
+            height: auto;
+          }
+
+          .dict-content table {
               border-collapse: collapse;
               max-width: 100%;
               font-size: ${parseInt(fontSize) - 1}px;
             }
 
-            a {
-              color: #1976D2;
+          .dict-content a {
+              color: #6af !important;
               text-decoration: none;
             }
 
-            a:hover {
+          .dict-content a:hover {
               text-decoration: underline;
             }
-          </style>
-        </head>
-        <body>
+
+            /* 词典特定样式覆盖 */
+          .dict-content .pos, .dict-content .gram {
+              color: #6c9 !important;
+            }
+
+          .dict-content .phon {
+              color: #888 !important;
+            }
+
+          .dict-content .def {
+              color: #e0e0e0 !important;
+            }
+
+          .dict-content .x, .dict-content .example {
+              color: #aaa !important;
+              font-style: italic;
+            }
+        </style>
+        <div class="dict-content">
           <div class="word-title">${this.escapeHtml(displayWord)}</div>
           ${displayWord !== word ? `<div class="redirect-info">(redirected from "${this.escapeHtml(word)}")</div>` : ''}
           ${htmlContent}
-        </body>
-        </html>
+        </div>
       `;
     } catch (error) {
       console.error('Lookup error:', error);
